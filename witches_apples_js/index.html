@@ -1,0 +1,29 @@
+<!doctype HTML>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <link rel="stylesheet" href="./style.css">
+        <script src="./script.js"></script>
+    </head>
+    <body>
+        <h1>Witches and Apples</h1>
+        <h2>The problem</h2>
+        <p>
+            Will find indexes where the value is less than any value to both left and right. These values are described here as 'sunken', since they are bounded by higher values. The difference between the value and its bounds is its depth. </p>
+        <p>In the figure below, the array <code>[2,3,1,4,1,5]</code> has sunken values at indexes 2 and 4 (using 0 indexing).
+        </p>
+        <figure>
+            <img src="./overview.jpg" alt="An array, with values drawn as heights in a landscape. Water fills the sunken values.">
+            <figcaption>
+                Fig.1 Blue areas occur wherever there are sunken values, the ammount of blue is the 'depth' of that value.
+            </figcaption>
+        </figure>
+        <p>
+            The algorithm must return cumulative/total depth for an array. In Fig.1 this would be 5 (since the value at index 2 has a depth of 2, and at index 4 has a depth of 3).
+        </p>
+        <h2>My Solution</h2>
+        
+        <p>Please see console for results</p>
+    </body>
+</html>
