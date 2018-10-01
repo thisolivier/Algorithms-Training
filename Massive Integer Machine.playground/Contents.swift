@@ -49,16 +49,14 @@ struct Geteger {
         var walkableNumIndex = 0
         while walkableNumIndex <= length {
             let key = walkableNum[walkableNumIndex]
-            var toAdd = 0
+            let zerosToAddBasedOnColOfInput = Int(pow(10, length - walkableNumIndex) as NSDecimalNumber)
             for arrayValueIndex in 0..<self.arrayValue.count {
-                let chunk = (self.arrayValue[arrayValueIndex] * key * Int(pow(10, arrayValueIndex) as NSDecimalNumber))
-                // All chunks are the same size, just shifted. Need an add function that doesn't increace cost just because new col
+                // Chunks are constant size, need to add using bit shifting more efficiently
+                let zerosToAddBasedOnMyCols = Int(pow(10, arrayValueIndex) as NSDecimalNumber)
+                let chunk = (key * zerosToAddBasedOnColOfInput * zerosToAddBasedOnMyCols * self.arrayValue[arrayValueIndex])
                 print("Chunk", chunk)
-                toAdd += chunk
+                multiGet.add(chunk)
             }
-            // You need to make sure toAdd doesn't become another massive int - some bit shifting maybe?
-            print("toAdd", toAdd)
-            multiGet.add(toAdd * Int(pow(10, length - walkableNumIndex) as NSDecimalNumber))
             walkableNumIndex += 1
         }
         self.arrayValue = multiGet.arrayValue
@@ -78,6 +76,6 @@ var factorialVictim = Geteger(number: factorial)
 for factorialIndex in 1..<factorial {
     factorialVictim.multiply(by: factorial - factorialIndex)
 }
-print("\(factorial) != ", factorialVictim.stringValue)
+print("\(factorial)! = ", factorialVictim.stringValue)
 
 
