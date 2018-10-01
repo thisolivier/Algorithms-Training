@@ -41,6 +41,17 @@ struct Geteger {
         }
     }
     
+    mutating func minusOne() {
+        for var index in 0..<self.arrayValue.count {
+            if self.arrayValue[index] == 0 {
+                self.arrayValue[index] = 9
+            } else {
+                self.arrayValue[index] -= 1
+                return
+            }
+        }
+    }
+    
     // TODO: Rewrite using <T>().enumerated().map { (index: Int, element: <T>) in ... }
     mutating func multiply(by number: Int) {
         let walkableNum = String(number).flatMap{Int(String($0))!}
@@ -49,10 +60,10 @@ struct Geteger {
         var walkableNumIndex = 0
         while walkableNumIndex <= length {
             let key = walkableNum[walkableNumIndex]
-            let zerosToAddBasedOnColOfInput = Int(pow(10, length - walkableNumIndex) as NSDecimalNumber)
+            let zerosToAddBasedOnColOfInput = Int.init(truncating: pow(10, length - walkableNumIndex) as NSDecimalNumber)
             for arrayValueIndex in 0..<self.arrayValue.count {
                 // Chunks are constant size, need to add using bit shifting more efficiently
-                let zerosToAddBasedOnMyCols = Int(pow(10, arrayValueIndex) as NSDecimalNumber)
+                let zerosToAddBasedOnMyCols: Int = Int.init(truncating: pow(10, arrayValueIndex) as NSDecimalNumber)
                 let chunk = (key * zerosToAddBasedOnColOfInput * zerosToAddBasedOnMyCols * self.arrayValue[arrayValueIndex])
                 print("Chunk", chunk)
                 multiGet.add(chunk)
@@ -77,5 +88,6 @@ for factorialIndex in 1..<factorial {
     factorialVictim.multiply(by: factorial - factorialIndex)
 }
 print("\(factorial)! = ", factorialVictim.stringValue)
-
+factorialVictim.minusOne()
+print(factorialVictim.stringValue)
 
