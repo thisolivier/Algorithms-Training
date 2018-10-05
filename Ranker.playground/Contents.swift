@@ -7,9 +7,9 @@ func climbingLeaderboard(scores: [Int], alice: [Int]) -> [Int] {
     var list: Node!
     var tempNodeBuffer: Node? = nil
     for score in scores {
-        if let previous = tempNodeBuffer {
+        if let previous = tempNodeBuffer, previous.value != score {
             tempNodeBuffer = Node(value: score, previous: previous)
-        } else {
+        } else if tempNodeBuffer == nil {
             list = Node(value: score, previous: nil)
             tempNodeBuffer = list
         }
