@@ -2,45 +2,69 @@
 
 import Foundation
 
-func climbingLeaderboard(scores: [Int], alice: [Int]) -> [Int] {
-    var output = [Int]()
-    var list: Node!
-    var tempNodeBuffer: Node? = nil
-    for score in scores {
-        if let previous = tempNodeBuffer, previous.value != score {
-            tempNodeBuffer = Node(value: score, previous: previous)
-        } else if tempNodeBuffer == nil {
-            list = Node(value: score, previous: nil)
-            tempNodeBuffer = list
+func cheatTree(arrayWithDuplates: [Int]) -> [(Int, Int)] {
+    var output = [(Int, Int)]()
+    var last:(Int, Int) = (-1, -1)
+    for item in arrayWithDuplates {
+        if item != last.0 {
+            last = (item, last.1 + 1)
+            output.append(last)
         }
-    }
-    for score in alice {
-        var position: Node = list
-        while score < position.value {
-            position = position.next ?? Node(value: -1, previous: tempNodeBuffer)
-        }
-        print(position.rank)
-        output.append(position.rank)
     }
     return output
 }
 
-class Node {
-    
-    let value: Int
-    let rank: Int
-    var next: Node? = nil
-    
-    init(value: Int, previous: Node?) {
-        self.value = value
-        if let previous = previous {
-            self.rank = previous.value == value ? previous.rank : previous.rank + 1
-            previous.next = self
-        } else {
-            self.rank = 1
+func judge(context: [Int], alice: [Int]) -> [Int] {
+    let sneakyTree = cheatTree(arrayWithDuplates: context)
+    var output = [Int]()
+    for score in alice {
+        var index: Float = Float(sneakyTree.count - 1) / 2
+        if index.truncatingRemainder(dividingBy: 1) != 0 {
+            index += 0.5
+        }
+        var flag = true
+        var count: Int = 0
+        while flag {
+            if (count > sneakyTree.count*2) {
+                print("Nooope!")
+                break
+            }
+            let above = sneakyTree[Int(index - 1)]
+            let current = sneakyTree[Int(index)]
+            if score < above.0 && score >= current.0 {
+                output.append(Int(index + 1))
+                flag = false
+            } else if score < above.0 {
+                if index == Float(sneakyTree.count - 1) {
+                    output.append(Int(index) + 2)
+                    flag = false
+                } else {
+                    index = (Float(sneakyTree.count - 1 - Int(index))/2) + index
+                }
+            } else if index == 1 {
+                output.append(1)
+                flag = false
+            } else {
+                print("""
+                    ----
+                    Looping no \(count) position \(index) count \(sneakyTree.count)
+                    Above val \(above.0), rank \(above.1)
+                    Alice \(score)
+                    Current val \(current.0), rank \(current.1)
+                """)
+                let newIndex = index/2
+                index = (index == newIndex) ? index - 1 : newIndex
+            }
+            if index.truncatingRemainder(dividingBy: 1) != 0 {
+                index += 0.5
+            }
+            count += 1
         }
     }
-    
+    return output
 }
 
-print(climbingLeaderboard(scores: [100, 90, 90, 80, 70, 60, 32, 1], alice: [1, 0, 50, 44, 90]))
+let context = [100, 100, 99, 99, 70, 69, 68, 67, 66, 65, 65, 63, 62, 61, 60, 59, 50, 2, 1, 1, 1]
+let alice = [0, 1, 3, 20, 70, 100]
+
+print(judge(context: context, alice: alice))
