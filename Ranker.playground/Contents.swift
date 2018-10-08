@@ -4,7 +4,7 @@ import Foundation
 
 func cheatTree(arrayWithDuplates: [Int]) -> [(Int, Int)] {
     var output = [(Int, Int)]()
-    var last:(Int, Int) = (-1, -1)
+    var last:(Int, Int) = (-1, 0)
     for item in arrayWithDuplates {
         if item != last.0 {
             last = (item, last.1 + 1)
@@ -61,6 +61,13 @@ func judge(context: [Int], alice: [Int]) -> [Int] {
             count += 1
         }
     }
+//    for intTuple in sneakyTree {
+//        var flag = ""
+//        if let index = output.index(of: intTuple.1) {
+//            flag = " - [\(alice[index]) on \(index)th try]"
+//        }
+//        print("\(intTuple.1) - \(intTuple.0)\(flag)")
+//    }
     return output
 }
 
