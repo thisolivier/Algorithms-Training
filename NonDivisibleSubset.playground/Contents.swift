@@ -1,4 +1,4 @@
-//: Playground - noun: a place where people can play
+//: Non-Divisible Subset - https://www.hackerrank.com/challenges/non-divisible-subset/problem
 
 import Foundation
 
