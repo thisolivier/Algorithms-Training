@@ -2,23 +2,6 @@
 
 import Foundation
 
-struct AliceScore {
-    
-    let index: Int
-    let score: Int
-    var cost: Int = 0
-    var rank: Int = -1
-    var logs: [String]
-    
-    mutating func log(_ log: String, shouldPrint: Bool = false) {
-        if shouldPrint {
-            print(log)
-        }
-        logs.append(log)
-    }
-    
-}
-
 func climbingLeaderboard(scores: [Int], alice: [Int]) -> [Int] {
     
     func cheatTree(arrayWithDuplates: [Int]) -> [(Int, Int)] {
@@ -34,77 +17,35 @@ func climbingLeaderboard(scores: [Int], alice: [Int]) -> [Int] {
     }
     
     let sneakyTree = cheatTree(arrayWithDuplates: scores)
-    let aliceScores:[AliceScore] = alice.map { (score: Int) in
-        
-        var aliceScore = AliceScore(index: alice.index(of: score)!, score: score, cost: 0, rank: -1, logs: [])
-        var index = -1
-        var minIndex: Int = 0
-        var maxIndex: Int = sneakyTree.count - 1
-        var emergencyStop = false
-        aliceScore.log("no.\(aliceScore.index) Alice Scored \(aliceScore.score)")
-        
-        while aliceScore.rank == -1, !emergencyStop {
-            let newIndex = (maxIndex + minIndex) / 2
-            index = newIndex == index ? index + 1 : newIndex
-            aliceScore.log("🎯 - Moving leaderboard index to \(index) using limits \(maxIndex), \(minIndex)")
-            let currentLeaderboardItem = sneakyTree[index]
-            
-            if score >= currentLeaderboardItem.0 && index == 0 {
-                aliceScore.rank = 1
-                aliceScore.log("🏆 - Index of first place")
-            } else if score < currentLeaderboardItem.0 && index + 1 == sneakyTree.count {
-                aliceScore.rank = sneakyTree.count + 1
-                aliceScore.log("💩 - Last place \(index)")
-            } else if index + 1 < sneakyTree.count {
+    let aliceScores:[Int] = alice.map { (score: Int) in
+        var aliceScore = -1
+        if score >= sneakyTree.first!.0 {
+            aliceScore = 1
+        } else if score < sneakyTree[sneakyTree.count - 1].0  {
+            aliceScore = sneakyTree.count + 1
+        } else {
+            var index = -1
+            var newIndex = -1
+            var minIndex: Int = 0
+            var maxIndex: Int = sneakyTree.count - 1
+            while aliceScore == -1 {
+                newIndex = (maxIndex + minIndex) / 2
+                index = newIndex == index ? index + 1 : newIndex
+                let currentLeaderboardItem = sneakyTree[index]
                 let belowLeaderboardItem = sneakyTree[index + 1]
                 if score < currentLeaderboardItem.0 && score >= belowLeaderboardItem.0 {
-                    aliceScore.rank = belowLeaderboardItem.1
-                    aliceScore.log("🏆 - Am below whats above, but above or equal to index \(index)")
+                    aliceScore = belowLeaderboardItem.1
+                } else if score < currentLeaderboardItem.0 {
+                    minIndex = index
+                } else {
+                    maxIndex = index
                 }
-            }
-            
-            if score < currentLeaderboardItem.0 {
-                minIndex = Int(index)
-                aliceScore.log("🌠 - New ceiling index \(index)")
-            } else {
-                maxIndex = Int(index)
-                aliceScore.log("🎈 - New floor index \(index)")
-            }
-            
-            if aliceScore.cost == 14 {
-                aliceScore.log("🤮 - \(score) on \(alice.index(of: score)!) try")
-                emergencyStop = true
-            } else {
-                aliceScore.cost += 1
             }
         }
         return aliceScore
     }
     
-    for scoreAndRank in sneakyTree {
-        var flag = ""
-        for score in aliceScores.filter( { (aliceScore: AliceScore) in
-            return aliceScore.score == scoreAndRank.0
-        }) {
-            flag = flag + " - [\(score.score) on \(score.index)th try]"
-        }
-        print("\(scoreAndRank.1) - \(scoreAndRank.0)\(flag)")
-    }
-    
-    let failures:[AliceScore] = aliceScores.filter{ $0.rank == -1}
-    for failureScore in failures {
-        print("""
-            -----
-
-            no.\(failureScore.index) Alice Scored \(failureScore.score)
-            -----
-            """)
-        for log in failureScore.logs {
-            print(log)
-        }
-    }
-    
-    return aliceScores.map{ $0.rank }
+    return aliceScores
 }
 
 let context = [295, 294, 291, 287, 287, 285, 285, 284, 283, 279, 277, 274, 274, 271, 270, 268, 268, 268, 264, 260, 259, 258, 257, 255, 252, 250, 244, 241, 240, 237, 236, 236, 231, 227, 227, 227, 226, 225, 224, 223, 216, 212, 200, 197, 196, 194, 193, 189, 188, 187, 183, 182, 178, 177, 173, 171, 169, 165, 143, 140, 137, 135, 133, 130, 130, 130, 128, 127, 122, 120, 116, 114, 113, 109, 106, 103, 99, 92, 85, 81, 69, 68, 63, 63, 63, 61, 57, 51, 47, 46, 38, 30, 28, 25, 22, 15, 14, 12, 6, 4]
