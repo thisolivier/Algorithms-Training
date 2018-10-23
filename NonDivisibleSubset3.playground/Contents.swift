@@ -4,17 +4,15 @@ import Foundation
 
 typealias Factors = [Int:Int]
 
-// you end up with a graph, where you need to calculate the longest possible edge where no two nodes can be divided by the divisor.
-// for each node, you need to build possible edges, but you can remove each node you've already built from from subsequent builds. If a node was already built from, the set of edges which was built is the set of all possible edges containing the node, therefore there can be no new edges made which will contain it, so no need to use it again.
-// now to think about this in terms of an array or dictionary. As an array, you hold Structs, which have factors<[Int:Int]>, and a dict of other indexes they can be added to.
-// when we build, we start with an array of nothing, and we check the current node isn't already in the array (go back to front) bailing out if we find ourselves. Meanwhile check against item in this edge if it breaks the divisor limit. The longer the edge, the harder to work out.
-// if it passes the check, we build again from the new index with the set containing the previous set and the new item.
-
-// Well fuck, you were supposed to solve for where the sum of the numbers is not divisible, not the product
-// In the case of the sum, you want to calculate connecting nodes very differently
 // A connecting node is one where the the factors of the divisor do NOT emerge for the sum of the two items
-// Building a list is a matter of checking if we can add... wait... I'm solving for sums, why am I calculating connecting nodes so wierdly?
-// The can add is really a can multiply. Can add is a matter of summing and then doing our factor magic.
+// Building a list is a matter of checking if we can add... wait... I'm solving for sums, why am I calculating connecting nodes so wierdly? The canAdd is really a canMultiply. Can add is a matter of summing and then doing our factor magic.
+// So, the world is a world of ints, when you calculate connecting nodes, you see which ones can be added to:
+// // This means summing and calculating the factors of that sum filtered by the divisor
+// // If it's not real, it passes
+// Building edges is a matter of adding items from the connecting nodes who are also preset in all the existing sets' connecting nodes using the same pattern of walking forward as we do now. But we might not have to build edges.
+// The largest set just IS the filtered set of every item we can connect to (skipping every item already passed), but what does that filter look like?
+// // For every item I can connect to, if that item can be added to all the others in the run, increment, this is the same as saying, if the item is in the connections of all items in the run.
+// // In total then, you would loop forward through the world, and for each item, each of it's connecting nodes (skip those passed in the world, but still possibly N*N or N^2). Since you already operate close to N time when you build the world, and build these sets, can't we calculate the largest set there? Fuck it, don't do sets, do edges.
 
 class NonDivisibleSubset {
     
@@ -197,4 +195,5 @@ func calculateFactors(in number: Int, filter: Factors? = nil) -> FactorCalculati
 
 let test = NonDivisibleSubset(numbers: [278, 576, 496, 727, 410, 124, 338, 149, 209, 702, 282, 718, 771, 575, 436], divided: 7)
 print(test.largestNonDivisibleSubsetSize())
+
 
